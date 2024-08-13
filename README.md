@@ -1,4 +1,4 @@
-# Pulpo
+# bashmu-action
 
 A GitHub action to implement something like
 
@@ -28,6 +28,9 @@ $ node_modules/.bin/ncc build src/main.js
 ```
 
 The actual action is `dist/index.js`.
+
+A test repository to use the action is at
+[hypered/use-bashmu-action](https://github.com/hypered/use-bashmu-action).
 
 ## Release
 
