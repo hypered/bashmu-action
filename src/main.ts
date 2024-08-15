@@ -1,17 +1,33 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
-try {
+async function main() {
   // `who-to-greet` input defined in action metadata file
   const nameToGreet: string = core.getInput('who-to-greet');
   console.log(`Hello ${nameToGreet}!`);
 
   const time: string = (new Date()).toTimeString();
-  core.setOutput("time", time);
+  core.setOutput('time', time);
 
   // Get the JSON webhook payload for the event that triggered the workflow
-  const payload: string = JSON.stringify(github.context.payload, undefined, 2)
+  const payload: string = JSON.stringify(github.context.payload, undefined, 2);
   console.log(`The event payload: ${payload}`);
-} catch (error: any) {
-  core.setFailed(error.message);
+}
+
+async function post() {
+  console.log('Post function');
+}
+
+try {
+  // We call this file twice in action.yaml: as `main:` and as `post:`.
+  // This state lets us differentiate betwee the two cases.
+  const runPostFunction = !!core.getState('run-post-function');
+  if (!runPostFunction) {
+    core.saveState('run-post-function', 'true');
+    main();
+  } else {
+    post();
+  }
+} catch (err: any) {
+  core.setFailed(`Action failed with error ${err}`);
 }
