@@ -29219,18 +29219,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-try {
+async function main() {
     // `who-to-greet` input defined in action metadata file
     const nameToGreet = core.getInput('who-to-greet');
     console.log(`Hello ${nameToGreet}!`);
     const time = (new Date()).toTimeString();
-    core.setOutput("time", time);
+    core.setOutput('time', time);
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
 }
-catch (error) {
-    core.setFailed(error.message);
+async function post() {
+    console.log('Post function');
+}
+try {
+    // We call this file twice in action.yaml: as `main:` and as `post:`.
+    // This state lets us differentiate betwee the two cases.
+    const runPostFunction = !!core.getState('runPostFunction');
+    if (!runPostFunction) {
+        core.saveState('runPostFunction', 'true');
+        main();
+    }
+    else {
+        post();
+    }
+}
+catch (err) {
+    core.setFailed(`Action failed with error ${err}`);
 }
 
 
