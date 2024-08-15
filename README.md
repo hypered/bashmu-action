@@ -18,12 +18,14 @@ with:
 ## Development
 
 ```
+$ nix-shell
 $ npm install @actions/core
 $ npm install @actions/github
 ```
 
 ```
 $ npm install @vercel/ncc
+$ npm install typescript
 $ node_modules/.bin/ncc build src/main.js
 ```
 
